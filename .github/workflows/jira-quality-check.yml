@@ -1,0 +1,41 @@
+name: Jira Quality Check
+
+on:
+  schedule:
+    # 11:30 AM Europe/Kiev (EEST = UTC+3 in summer, EET = UTC+2 in winter).
+    # GitHub Actions cron runs in UTC. During summer (Mar–Oct) this fires at 08:30 UTC
+    # which is 11:30 AM Kiev. During winter (Oct–Mar) it fires at 10:30 AM Kiev.
+    # To keep exactly 11:30 AM Kiev year-round, use two schedules and disable the other
+    # each season — or accept the 1-hour drift in winter.
+    - cron: '30 8 * * 1-5'   # Weekdays at 08:30 UTC = 11:30 AM EEST (summer)
+
+  workflow_dispatch:          # Allow manual trigger from the GitHub UI
+
+jobs:
+  quality-check:
+    name: Run Jira Quality Check Agent
+    runs-on: ubuntu-latest
+    timeout-minutes: 15       # Kill if the agent hangs
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install anthropic
+
+      - name: Run Claude Jira Quality Agent
+        env:
+          # ── Required secrets (add these in GitHub → Settings → Secrets) ──────
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          JIRA_TOKEN:        ${{ secrets.JIRA_TOKEN }}
+          SLACK_TOKEN:       ${{ secrets.SLACK_TOKEN }}
+          # ── Optional overrides (defaults are baked into the script) ───────────
+          # JIRA_URL:        ${{ secrets.JIRA_URL }}
+          # JIRA_EMAIL:      ${{ secrets.JIRA_EMAIL }}
+        run: python claude_jira_agent.py
