@@ -40,7 +40,7 @@ SLACK_TOKEN = os.environ["SLACK_TOKEN"]
 # ANTHROPIC_API_KEY is picked up automatically by the Anthropic SDK
 
 # ── App config ─────────────────────────────────────────────────────────────────
-SLACK_CHANNEL = "b2b-dev-estimates"
+SLACK_CHANNEL = "U04P18W82AF"  # TODO: revert to "b2b-dev-estimates" after testing
 EMOJIS        = ["🫪", "🐝", "🫈"]
 
 # Jira display name (substring) → Slack user ID
