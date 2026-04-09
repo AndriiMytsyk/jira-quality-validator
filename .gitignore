@@ -1,0 +1,9 @@
+# Credentials — never commit tokens
+Credentials.rtf
+*.rtf
+
+# Logs
+*.log
+
+# macOS
+.DS_Store
